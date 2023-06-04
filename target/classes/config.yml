@@ -60,6 +60,7 @@ messages:
   adminListCommandUsage: '&cUsage: /dbd admin list <generators|chests|hooks|exitgates|totems|hatches|killers|survivors>'
   listItemsIntro: '&2List of %type%:'
   listItems: '&2ID: &f%id% &7- &2Spawnpoint: &f%spawnpoint%'
+  cantEditGame: '&cYou can''t edit the game while someone is playing!'
   unknownAdminListCommand: '&cUnknown command! Use &7/dbd admin list &cfor help.'
   typeSignNotSpecified: '&cYou must specify the type of sign (join, leave, stats, spectate).'
   noPermissionToPlaceSign: '&cYou don''t have permission to place this sign!'
@@ -78,10 +79,10 @@ messages:
   adminHelpCommand:
     - '&2DeadByDaylight admin commands:'
     - '&2/dbd admin help &r- &7show this message'
-    - '&2/dbd admin set &r- &7set the lobby or spectator spawnpoint'
-    - '&2/dbd admin add &r- &7add a generator, chest, hook, exit gate, totem or hatch'
-    - '&2/dbd admin remove &r- &7remove a generator, chest, hook, exit gate, totem or hatch'
-    - '&2/dbd admin list &r- &7list generators, chests, hooks, exit gates, totems or hatches'
+    - '&2/dbd admin set &r- &7set the lobby or spectator spawn point'
+    - '&2/dbd admin add &r- &7add a generator, chest, hook, exit gate, totem, hatch, killer or survivor spawn point'
+    - '&2/dbd admin remove &r- &7remove a generator, chest, hook, exit gate, totem, hatch, killer or survivor spawn point'
+    - '&2/dbd admin list &r- &7list generators, chests, hooks, exit gates, totems, hatches, killers or survivors spawn points'
   showAdminCommands: '&2/dbd admin &r- &7show admin commands'
 signs:
   joinSign:

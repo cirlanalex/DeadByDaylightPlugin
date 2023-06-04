@@ -59,6 +59,10 @@ public class DeadByDaylightCommand implements CommandExecutor {
             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminSetCommandUsage"));
             return;
         }
+        if (this.game.getPlayers().getTotalCount() > 0) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.cantEditGame"));
+            return;
+        }
         switch (args[2].toLowerCase()) {
             case "lobby":
                 this.game.getSpawnpoints().setSpawnpointSpawn(new SpawnpointEntity(player));
@@ -87,6 +91,10 @@ public class DeadByDaylightCommand implements CommandExecutor {
     private void adminAddCommand(Player player, String[] args) {
         if (args.length == 2) {
             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddCommandUsage"));
+            return;
+        }
+        if (this.game.getPlayers().getTotalCount() > 0) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.cantEditGame"));
             return;
         }
         switch (args[2].toLowerCase()) {
@@ -143,6 +151,10 @@ public class DeadByDaylightCommand implements CommandExecutor {
     private void adminRemoveCommand(Player player, String[] args) {
         if (args.length < 4) {
             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveCommandUsage"));
+            return;
+        }
+        if (this.game.getPlayers().getTotalCount() > 0) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.cantEditGame"));
             return;
         }
         int id;

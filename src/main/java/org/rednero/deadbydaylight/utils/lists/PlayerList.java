@@ -139,6 +139,10 @@ public class PlayerList {
         return survivorsCount;
     }
 
+    public int getTotalCount() {
+        return this.playersType.size();
+    }
+
     public boolean isPlayerInLobby(Player player) {
         return this.playersType.get(player) != null;
     }
