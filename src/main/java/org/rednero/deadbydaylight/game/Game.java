@@ -8,6 +8,7 @@ import org.rednero.deadbydaylight.utils.enums.GameState;
 import org.rednero.deadbydaylight.utils.enums.PlayerType;
 import org.rednero.deadbydaylight.utils.lists.PlayerList;
 import org.rednero.deadbydaylight.utils.lists.SignList;
+import org.rednero.deadbydaylight.utils.lists.SpawnpointList;
 
 public class Game {
     private final JavaPlugin plugin;
@@ -15,6 +16,7 @@ public class Game {
     private final FileConfiguration scoreboardConfig;
     private PlayerList players;
     private SignList signs;
+    private SpawnpointList spawnpoints;
     private GameState gameState;
     private int countdownTaskId;
     private int countdown;
@@ -25,6 +27,7 @@ public class Game {
         this.scoreboardConfig = scoreboardConfig;
         this.players = new PlayerList(this.config, this.scoreboardConfig);
         this.signs = new SignList(plugin);
+        this.spawnpoints = new SpawnpointList(plugin);
         this.gameState = GameState.LOBBY;
     }
 
@@ -98,6 +101,50 @@ public class Game {
         }, 0L, 20L);
     }
 
+    private boolean checkSpawnpoints(Player player) {
+        if (this.spawnpoints.getSpawnpointSpawn() == null) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.noSpawnPointSpawn"));
+            return false;
+        }
+        if (this.spawnpoints.getSpawnpointSpectator() == null) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.noSpawnPointSpectator"));
+            return false;
+        }
+        if (this.spawnpoints.getSpawnpointsKiller().size() < 1) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.notEnoughSpawnPointsKiller"));
+            return false;
+        }
+        if (this.spawnpoints.getSpawnpointsSurvivor().size() < 4) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.notEnoughSpawnPointsSurvivor"));
+            return false;
+        }
+        if (this.spawnpoints.getChests().size() < this.config.getInt("game.chests")) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.notEnoughChests"));
+            return false;
+        }
+        if (this.spawnpoints.getGenerators().size() < this.config.getInt("game.generators")) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.notEnoughGenerators"));
+            return false;
+        }
+        if (this.spawnpoints.getHooks().size() < this.config.getInt("game.hooks")) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.notEnoughHooks"));
+            return false;
+        }
+        if (this.spawnpoints.getExitGates().size() < this.config.getInt("game.exitGates")) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.notEnoughExitGates"));
+            return false;
+        }
+        if (this.spawnpoints.getTotems().size() < this.config.getInt("game.totems")) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.notEnoughTotems"));
+            return false;
+        }
+        if (this.config.getBoolean("game.hatch") && this.spawnpoints.getHatches().size() < 1) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.noHatch"));
+            return false;
+        }
+        return true;
+    }
+
     public SignList getSigns() {
         return this.signs;
     }
@@ -105,6 +152,9 @@ public class Game {
     public void joinGame(Player player) {
         if (!player.hasPermission("deadbydaylight.play")) {
             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.noPermission"));
+            return;
+        }
+        if (!this.checkSpawnpoints(player)) {
             return;
         }
         if (this.players.isPlayerInLobby(player)) {
@@ -150,6 +200,9 @@ public class Game {
     public void spectateGame(Player player) {
         if (!player.hasPermission("deadbydaylight.play")) {
             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.noPermission"));
+            return;
+        }
+        if (!this.checkSpawnpoints(player)) {
             return;
         }
         if (this.players.isPlayerInLobby(player)) {
@@ -208,6 +261,10 @@ public class Game {
 
     public PlayerList getPlayers() {
         return this.players;
+    }
+
+    public SpawnpointList getSpawnpoints() {
+        return this.spawnpoints;
     }
 
     public GameState getGameState() {

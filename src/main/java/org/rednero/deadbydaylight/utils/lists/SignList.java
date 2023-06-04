@@ -56,14 +56,6 @@ public class SignList {
         this.signs.remove(sign);
     }
 
-    public SignType getSignType(Sign sign) {
-        return this.signs.get(sign);
-    }
-
-    public Map<Sign, SignType> getSigns() {
-        return this.signs;
-    }
-
     public boolean isSign(Sign sign) {
         return this.signs.containsKey(sign);
     }

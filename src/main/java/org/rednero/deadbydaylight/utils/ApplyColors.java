@@ -56,6 +56,16 @@ public class ApplyColors {
         this.applyColorCodes("messages.killerLeft", this.config);
         this.applyColorCodes("messages.survivorLeft", this.config);
         this.applyColorCodes("messages.noSurvivorsLeft", this.config);
+        this.applyColorCodes("messages.noSpawnPointSpawn", this.config);
+        this.applyColorCodes("messages.noSpawnPointSpectator", this.config);
+        this.applyColorCodes("messages.notEnoughSpawnPointsKiller", this.config);
+        this.applyColorCodes("messages.notEnoughSpawnPointsSurvivor", this.config);
+        this.applyColorCodes("messages.notEnoughChests", this.config);
+        this.applyColorCodes("messages.notEnoughGenerators", this.config);
+        this.applyColorCodes("messages.notEnoughHooks", this.config);
+        this.applyColorCodes("messages.notEnoughExitGates", this.config);
+        this.applyColorCodes("messages.notEnoughTotems", this.config);
+        this.applyColorCodes("messages.noHatch", this.config);
         this.applyColorCodesList("messages.helpCommand", this.config);
         this.applyColorCodesList("messages.adminHelpCommand", this.config);
         this.applyColorCodesList("signs.joinSign", this.config);

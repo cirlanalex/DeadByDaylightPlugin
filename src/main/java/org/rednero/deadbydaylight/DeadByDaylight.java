@@ -50,6 +50,7 @@ public final class DeadByDaylight extends JavaPlugin {
     @Override
     public void onDisable() {
         this.game.getSigns().saveConfig();
+        this.game.getSpawnpoints().saveConfig();
         getLogger().info("DeadByDaylight plugin by RedNero has been disabled.");
     }
 }
