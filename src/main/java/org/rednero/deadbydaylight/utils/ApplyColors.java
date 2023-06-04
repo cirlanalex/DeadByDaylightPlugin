@@ -75,11 +75,17 @@ public class ApplyColors {
         this.applyColorCodes("messages.adminAddKillerCommandSuccess", this.config);
         this.applyColorCodes("messages.adminAddSurvivorCommandSuccess", this.config);
         this.applyColorCodes("messages.generatorAdded", this.config);
+        this.applyColorCodes("messages.cantAddGenerator", this.config);
         this.applyColorCodes("messages.chestAdded", this.config);
+        this.applyColorCodes("messages.cantAddChest", this.config);
         this.applyColorCodes("messages.hookAdded", this.config);
+        this.applyColorCodes("messages.cantAddHook", this.config);
         this.applyColorCodes("messages.totemAdded", this.config);
+        this.applyColorCodes("messages.cantAddTotem", this.config);
         this.applyColorCodes("messages.exitGateAdded", this.config);
+        this.applyColorCodes("messages.cantAddExitGate", this.config);
         this.applyColorCodes("messages.hatchAdded", this.config);
+        this.applyColorCodes("messages.cantAddHatch", this.config);
         this.applyColorCodes("messages.unknownAdminAddCommand", this.config);
         this.applyColorCodes("messages.adminRemoveCommandUsage", this.config);
         this.applyColorCodes("messages.adminRemoveIdNotFound", this.config);
