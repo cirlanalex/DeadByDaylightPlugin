@@ -179,6 +179,7 @@ public class DeadByDaylightCommand implements CommandExecutor {
                 this.removeSpawnpointEntity(player, this.game.getSpawnpoints().getSpawnpointsKiller(), id, "killer");
                 break;
             case "survivor":
+                this.removeSpawnpointEntity(player, this.game.getSpawnpoints().getSpawnpointsSurvivor(), id, "survivor");
                 break;
             default:
                 player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminRemoveCommand"));
@@ -190,7 +191,7 @@ public class DeadByDaylightCommand implements CommandExecutor {
         player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", type));
         int i = 1;
         for (GameObject object : list) {
-            player.sendMessage(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", object.getSpawnpointObject().saveToString().replace("::", ",")));
+            player.sendMessage(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", object.getSpawnpointObject().saveToString().replace("::", ", ")));
             i++;
         }
     }
@@ -199,7 +200,7 @@ public class DeadByDaylightCommand implements CommandExecutor {
         player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", type));
         int i = 1;
         for (SpawnpointEntity entity : list) {
-            player.sendMessage(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", entity.getX() + "," + entity.getY() + "," + entity.getZ()));
+            player.sendMessage(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", String.format("%.2f",entity.getX()) + ", " + String.format("%.2f",entity.getY()) + ", " + String.format("%.2f",entity.getZ())));
             i++;
         }
     }
