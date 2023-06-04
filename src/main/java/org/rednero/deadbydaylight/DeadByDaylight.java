@@ -8,11 +8,13 @@ import org.rednero.deadbydaylight.events.*;
 import org.rednero.deadbydaylight.game.Game;
 import org.rednero.deadbydaylight.timers.UpdateScoreboard;
 import org.rednero.deadbydaylight.utils.ApplyColors;
+import org.rednero.deadbydaylight.utils.ScoreboardConfig;
 
 public final class DeadByDaylight extends JavaPlugin {
 
     private Game game;
     private FileConfiguration config;
+    private FileConfiguration scoreboardConfig;
 
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(new SignPlace(this, this.config, this.game.getSigns()), this);
@@ -20,6 +22,7 @@ public final class DeadByDaylight extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerLeave(this.game), this);
         getServer().getPluginManager().registerEvents(new SignBreak(this.config, this.game.getSigns()), this);
         getServer().getPluginManager().registerEvents(new SupportSignBreak(this.game.getSigns()), this);
+        getServer().getPluginManager().registerEvents(new AddObject(this.config, this.game), this);
     }
 
     private void implementCommands() {
@@ -27,8 +30,8 @@ public final class DeadByDaylight extends JavaPlugin {
     }
 
     private void startTimers() {
-        BukkitRunnable scoreboardTask = new UpdateScoreboard(this.game);
-        scoreboardTask.runTaskTimer(this, 0L, 10L);
+        BukkitRunnable scoreboardTask = new UpdateScoreboard(this.game, this.scoreboardConfig);
+        scoreboardTask.runTaskTimer(this, 0L, this.scoreboardConfig.getLong("animationTime"));
     }
 
     @Override
@@ -36,8 +39,9 @@ public final class DeadByDaylight extends JavaPlugin {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
         this.config = getConfig();
-        new ApplyColors(this.config);
-        this.game = new Game(this, this.config);
+        ApplyColors applyColors = new ApplyColors(this.config);
+        this.scoreboardConfig = new ScoreboardConfig(this, applyColors).getConfig();
+        this.game = new Game(this, this.config, this.scoreboardConfig);
         this.registerEvents();
         this.implementCommands();
         this.startTimers();
@@ -47,6 +51,7 @@ public final class DeadByDaylight extends JavaPlugin {
     @Override
     public void onDisable() {
         this.game.getSigns().saveConfig();
+        this.game.getSpawnpoints().saveConfig();
         getLogger().info("DeadByDaylight plugin by RedNero has been disabled.");
     }
 }

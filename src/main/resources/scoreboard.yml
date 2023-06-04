@@ -1,0 +1,34 @@
+# 20 represents 1s
+animationTime: 5
+scoreboard:
+  title:
+    - ''
+    - '&c&lD'
+    - '&4&lD&c&lB'
+    - '&4&lD&c&lB&4&lD'
+    - '&4&lD&c&lB&4&lD'
+    - '&4&lD&c&lB'
+    - '&4&lD'
+  content:
+    lobby:
+      - '&7&lLOBBY'
+      - '&7&lPlayers: &f%players%'
+    starting:
+      - '&7&lSTARTING'
+      - '&7&lPlayers: &f%players%'
+      - '&7&lStarting in: &f%time%'
+    inGameKiller:
+      - '&7&lINGAME'
+      - '&7&lSurvivors: &f%survivors%'
+      - '&7&lRole: &cKiller'
+    inGameSurvivor:
+      - '&7&lINGAME'
+      - '&7&lSurvivors: &f%survivors%'
+      - '&7&lRole: &aSurvivor'
+    inGameSpectator:
+      - '&7&lINGAME'
+      - '&7&lSurvivors: &f%survivors%'
+      - '&7&lRole: &7Spectator'
+    ending:
+      - '&7&lENDING'
+      - '&7&lEnding in: &f%time%'
