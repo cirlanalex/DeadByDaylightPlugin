@@ -1,0 +1,61 @@
+game:
+  minPlayers: 2
+  waitingForPlayersTime: 30
+  fullLobbyTime: 10
+  endingTime: 10
+  hooks: 10
+  generators: 5
+  exitGates: 2
+  chests: 4
+  totems: 5
+  generatorRepairTime: 10
+  exitGateOpenTime: 5
+  hatch: true
+messages:
+  prefix: '&7&l[&cDeadByDaylight&7&l]&r '
+  joinedMessage: '&aYou joined the lobby!'
+  leftMessage: '&cYou left the lobby!'
+  unknownCommand: '&cUnknown command! Use &7/dbd help &cfor help.'
+  unknownAdminCommand: '&cUnknown command! Use &7/dbd admin help &cfor help.'
+  consoleCommand: '&cYou can''t use this command in console!'
+  playerNotFound: '&cPlayer not found!'
+  notInLobby: '&cYou are not in a lobby!'
+  alreadyInLobby: '&cYou are already in a lobby!'
+  lobbyFull: '&cThe lobby is full!'
+  gameAlreadyStarted: '&cThe game has already started!'
+  killerLeft: '&cThe killer %killer% left the game!'
+  survivorLeft: '&cThe survivor %survivor% left the game!'
+  noSurvivorsLeft: '&cThere are no survivors left!'
+  typeSignNotSpecified: '&cYou must specify the type of sign (join, leave, stats).'
+  noPermissionToPlaceSign: '&cYou don''t have permission to place this sign!'
+  noPermissionToBreakSign: '&cYou don''t have permission to break this sign!'
+  noPermissionToUseCommand: '&cYou don''t have permission to use this command!'
+  noPermission: '&cYou don''t have permission to do this!'
+  comingSoon: '&cComing soon...'
+  helpCommand:
+    - '&2DeadByDaylight commands:'
+    - '&2/dbd help &r- &7show this message'
+    - '&2/dbd join &r- &7join the lobby'
+    - '&2/dbd leave &r- &7leave the game'
+    - '&2/dbd stats &r- &7show your stats'
+    - '&2/dbd stats <player> &r- &7show stats of a player'
+  adminHelpCommand:
+    - '&2DeadByDaylight admin commands:'
+    - '&2/dbd admin help &r- &7show this message'
+  showAdminCommands: '&2/dbd admin &r- &7show admin commands'
+signs:
+  joinSign:
+    - '&7&l[&cDBD&7&l]'
+    - '&aJoin'
+    - '&7Right click to'
+    - '&7join.'
+  leaveSign:
+    - '&7&l[&cDBD&7&l]'
+    - '&cLeave'
+    - '&7Right click to'
+    - '&7leave.'
+  statsSign:
+    - '&7&l[&cDBD&7&l]'
+    - '&6Stats'
+    - '&7Right click to'
+    - '&7see your stats.'

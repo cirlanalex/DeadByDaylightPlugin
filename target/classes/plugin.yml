@@ -1,0 +1,10 @@
+name: DeadByDaylight
+version: '1.0-SNAPSHOT'
+main: org.rednero.deadbydaylight.DeadByDaylight
+author: RedNero
+description: A Dead By Daylight plugin that allows you to experience the game in Minecraft!
+commands:
+  dbd:
+    description: Dead By Daylight main command
+    usage: /dbd
+    aliases: [deadbydaylight]

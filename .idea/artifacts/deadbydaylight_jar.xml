@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="deadbydaylight:jar">
+    <output-path>$PROJECT_DIR$/../../deadbydaylight/The server/plugins</output-path>
+    <root id="archive" name="deadbydaylight.jar">
+      <element id="module-output" name="deadbydaylight" />
+    </root>
+  </artifact>
+</component>
