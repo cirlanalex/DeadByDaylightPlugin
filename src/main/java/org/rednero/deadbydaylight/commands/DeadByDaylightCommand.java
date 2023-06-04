@@ -14,7 +14,6 @@ import org.rednero.deadbydaylight.game.Game;
 import org.rednero.deadbydaylight.game.objects.GameObject;
 import org.rednero.deadbydaylight.utils.structs.SpawnpointEntity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,6 +41,236 @@ public class DeadByDaylightCommand implements CommandExecutor {
         }
     }
 
+    private void showStats(Player player, String[] args) {
+        if (args.length > 1) {
+            Player target = player.getServer().getPlayer(args[1]);
+            if (target == null) {
+                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.playerNotFound"));
+                return;
+            }
+            this.game.showStats(player, target);
+            return;
+        }
+        this.game.showStats(player);
+    }
+
+    private void adminSetCommand(Player player, String[] args) {
+        if (args.length == 2) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminSetCommandUsage"));
+            return;
+        }
+        switch (args[2].toLowerCase()) {
+            case "lobby":
+                this.game.getSpawnpoints().setSpawnpointSpawn(new SpawnpointEntity(player));
+                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminSetLobbyCommandSuccess"));
+                break;
+            case "spectator":
+                this.game.getSpawnpoints().setSpawnpointSpectator(new SpawnpointEntity(player));
+                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminSetSpectatorCommandSuccess"));
+                break;
+            default:
+                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminSetCommand"));
+                break;
+        }
+    }
+
+    private void addItem(Player player, String name, String lore, String replace) {
+        ItemStack item = new ItemStack(Material.STICK);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.GOLD + name);
+        meta.setLore(Arrays.asList(lore));
+        item.setItemMeta(meta);
+        player.getInventory().setItem(0, item);
+        player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddCreateUsage").replace("%type%", replace));
+    }
+
+    private void adminAddCommand(Player player, String[] args) {
+        if (args.length == 2) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddCommandUsage"));
+            return;
+        }
+        switch (args[2].toLowerCase()) {
+            case "generator":
+                this.addItem(player, "Add Generator", "dbd.generator", "generator");
+                break;
+            case "totem":
+                this.addItem(player, "Add Totem", "dbd.totem", "totem");
+                break;
+            case "hatch":
+                this.addItem(player, "Add Hatch", "dbd.hatch", "hatch");
+                break;
+            case "exitgate":
+                this.addItem(player, "Add Exit Gate", "dbd.exitgate", "exitgate");
+                break;
+            case "chest":
+                this.addItem(player, "Add Chest", "dbd.chest", "chest");
+                break;
+            case "hook":
+                this.addItem(player, "Add Hook", "dbd.hook", "hook");
+                break;
+            case "killer":
+                this.game.getSpawnpoints().getSpawnpointsKiller().add(new SpawnpointEntity(player));
+                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddKillerCommandSuccess"));
+                break;
+            case "survivor":
+                this.game.getSpawnpoints().getSpawnpointsSurvivor().add(new SpawnpointEntity(player));
+                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddSurvivorCommandSuccess"));
+                break;
+            default:
+                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminAddCommand"));
+                break;
+        }
+    }
+
+    private void removeSpawnpoint(Player player, List<GameObject> list, int id, String type) {
+        if (list.size() < id) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
+            return;
+        }
+        list.remove(id - 1);
+        player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveSuccess").replace("%type%", type).replace("%id%", String.valueOf(id)));
+    }
+
+    private void removeSpawnpointEntity(Player player, List<SpawnpointEntity> list, int id, String type) {
+        if (list.size() < id) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
+            return;
+        }
+        list.remove(id - 1);
+        player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveSuccess").replace("%type%", type).replace("%id%", String.valueOf(id)));
+    }
+
+    private void adminRemoveCommand(Player player, String[] args) {
+        if (args.length < 4) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveCommandUsage"));
+            return;
+        }
+        int id;
+        try {
+            id = Integer.parseInt(args[3]);
+        } catch (NumberFormatException e) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveCommandUsage"));
+            return;
+        }
+        if (id < 1) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
+            return;
+        }
+        switch (args[2].toLowerCase()) {
+            case "generator":
+                this.removeSpawnpoint(player, this.game.getSpawnpoints().getGenerators(), id, "generator");
+                break;
+            case "totem":
+                this.removeSpawnpoint(player, this.game.getSpawnpoints().getTotems(), id, "totem");
+                break;
+            case "hatch":
+                this.removeSpawnpoint(player, this.game.getSpawnpoints().getHatches(), id, "hatch");
+                break;
+            case "exitgate":
+                this.removeSpawnpoint(player, this.game.getSpawnpoints().getExitGates(), id, "exitgate");
+                break;
+            case "chest":
+                this.removeSpawnpoint(player, this.game.getSpawnpoints().getChests(), id, "chest");
+                break;
+            case "hook":
+                this.removeSpawnpoint(player, this.game.getSpawnpoints().getHooks(), id, "hook");
+                break;
+            case "killer":
+                this.removeSpawnpointEntity(player, this.game.getSpawnpoints().getSpawnpointsKiller(), id, "killer");
+                break;
+            case "survivor":
+                break;
+            default:
+                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminRemoveCommand"));
+                break;
+        }
+    }
+
+    private void printListSpawnpoints(Player player, List<GameObject> list, String type) {
+        player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", type));
+        int i = 1;
+        for (GameObject object : list) {
+            player.sendMessage(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", object.getSpawnpointObject().saveToString().replace("::", ",")));
+            i++;
+        }
+    }
+
+    private void printListSpawnpointsEntity(Player player, List<SpawnpointEntity> list, String type) {
+        player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", type));
+        int i = 1;
+        for (SpawnpointEntity entity : list) {
+            player.sendMessage(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", entity.getX() + "," + entity.getY() + "," + entity.getZ()));
+            i++;
+        }
+    }
+
+    private void adminListCommand(Player player, String[] args) {
+        if (args.length == 2) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminListCommandUsage"));
+            return;
+        }
+        switch (args[2].toLowerCase()) {
+            case "generators":
+                printListSpawnpoints(player, this.game.getSpawnpoints().getGenerators(), "generator");
+                break;
+            case "totems":
+                printListSpawnpoints(player, this.game.getSpawnpoints().getTotems(), "totem");
+                break;
+            case "hatches":
+                printListSpawnpoints(player, this.game.getSpawnpoints().getHatches(), "hatch");
+                break;
+            case "exitgates":
+                printListSpawnpoints(player, this.game.getSpawnpoints().getExitGates(), "exitgate");
+                break;
+            case "chests":
+                printListSpawnpoints(player, this.game.getSpawnpoints().getChests(), "chest");
+                break;
+            case "hooks":
+                printListSpawnpoints(player, this.game.getSpawnpoints().getHooks(), "hook");
+                break;
+            case "killers":
+                printListSpawnpointsEntity(player, this.game.getSpawnpoints().getSpawnpointsKiller(), "killer");
+                break;
+            case "survivors":
+                printListSpawnpointsEntity(player, this.game.getSpawnpoints().getSpawnpointsSurvivor(), "survivor");
+                break;
+            default:
+                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminListCommand"));
+                break;
+        }
+    }
+
+    private void adminCommand(Player player, String[] args) {
+        if (!player.hasPermission("deadbydaylight.admin")) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.noPermissionToUseCommand"));
+            return;
+        }
+        if (args.length == 1) {
+            this.adminHelp(player);
+            return;
+        }
+        switch (args[1].toLowerCase()) {
+            case "help":
+                this.adminHelp(player);
+                break;
+            case "set":
+                this.adminSetCommand(player, args);
+                break;
+            case "add":
+                this.adminAddCommand(player, args);
+                break;
+            case "remove":
+                this.adminRemoveCommand(player, args);
+                break;
+            case "list":
+                this.adminListCommand(player, args);
+                break;
+            default:
+                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminCommand"));
+                break;
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (sender instanceof ConsoleCommandSender) {
@@ -57,7 +286,7 @@ public class DeadByDaylightCommand implements CommandExecutor {
             this.help(player);
             return true;
         }
-        switch (args[0]) {
+        switch (args[0].toLowerCase()) {
             case "help":
                 this.help(player);
                 break;
@@ -71,295 +300,10 @@ public class DeadByDaylightCommand implements CommandExecutor {
                 this.game.leaveGame(player);
                 break;
             case "stats":
-                if (args.length > 1) {
-                    Player target = player.getServer().getPlayer(args[1]);
-                    if (target == null) {
-                        player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.playerNotFound"));
-                        break;
-                    }
-                    this.game.showStats(player, target);
-                    break;
-                }
-                this.game.showStats(player);
+                this.showStats(player, args);
                 break;
             case "admin":
-                if (!player.hasPermission("deadbydaylight.admin")) {
-                    player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.noPermissionToUseCommand"));
-                    break;
-                }
-                if (args.length == 1) {
-                    this.adminHelp(player);
-                    break;
-                }
-                switch (args[1]) {
-                    case "help":
-                        this.adminHelp(player);
-                        break;
-                    case "set":
-                        if (args.length == 2) {
-                            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminSetCommandUsage"));
-                            break;
-                        }
-                        switch (args[2]) {
-                            case "lobby":
-                                this.game.getSpawnpoints().setSpawnpointSpawn(new SpawnpointEntity(player));
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminSetLobbyCommandSuccess"));
-                                break;
-                            case "spectator":
-                                this.game.getSpawnpoints().setSpawnpointSpectator(new SpawnpointEntity(player));
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminSetSpectatorCommandSuccess"));
-                                break;
-                            default:
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminSetCommand"));
-                                break;
-                        }
-                        break;
-                    case "add":
-                        if (args.length == 2) {
-                            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddCommandUsage"));
-                            break;
-                        }
-                        ItemStack item = new ItemStack(Material.STICK);
-                        ItemMeta meta = item.getItemMeta();
-                        switch (args[2]) {
-                            case "generator":
-                                meta.setDisplayName(ChatColor.GOLD + "Add Generator");
-                                meta.setLore(Arrays.asList("dbd.generator"));
-                                item.setItemMeta(meta);
-                                player.getInventory().setItem(0, item);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddCreateUsage").replace("%type%", "generator"));
-                                break;
-                            case "totem":
-                                meta.setDisplayName(ChatColor.GOLD + "Add Totem");
-                                meta.setLore(Arrays.asList("dbd.totem"));
-                                item.setItemMeta(meta);
-                                player.getInventory().setItem(0, item);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddCreateUsage").replace("%type%", "totem"));
-                                break;
-                            case "hatch":
-                                meta.setDisplayName(ChatColor.GOLD + "Add Hatch");
-                                meta.setLore(Arrays.asList("dbd.hatch"));
-                                item.setItemMeta(meta);
-                                player.getInventory().setItem(0, item);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddCreateUsage").replace("%type%", "hatch"));
-                                break;
-                            case "exitgate":
-                                meta.setDisplayName(ChatColor.GOLD + "Add Exit Gate");
-                                meta.setLore(Arrays.asList("dbd.exitgate"));
-                                item.setItemMeta(meta);
-                                player.getInventory().setItem(0, item);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddCreateUsage").replace("%type%", "exitgate"));
-                                break;
-                            case "chest":
-                                meta.setDisplayName(ChatColor.GOLD + "Add Chest");
-                                meta.setLore(Arrays.asList("dbd.chest"));
-                                item.setItemMeta(meta);
-                                player.getInventory().setItem(0, item);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddCreateUsage").replace("%type%", "chest"));
-                                break;
-                            case "hook":
-                                meta.setDisplayName(ChatColor.GOLD + "Add Hook");
-                                meta.setLore(Arrays.asList("dbd.hook"));
-                                item.setItemMeta(meta);
-                                player.getInventory().setItem(0, item);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddCreateUsage").replace("%type%", "hook"));
-                                break;
-                            case "killer":
-                                this.game.getSpawnpoints().getSpawnpointsKiller().add(new SpawnpointEntity(player));
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddKillerCommandSuccess"));
-                                break;
-                            case "survivor":
-                                this.game.getSpawnpoints().getSpawnpointsSurvivor().add(new SpawnpointEntity(player));
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminAddSurvivorCommandSuccess"));
-                                break;
-                            default:
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminAddCommand"));
-                                break;
-                        }
-                        break;
-                    case "remove":
-                        if (args.length < 4) {
-                            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveCommandUsage"));
-                            break;
-                        }
-                        int id;
-                        try {
-                            id = Integer.parseInt(args[3]);
-                        } catch (NumberFormatException e) {
-                            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveCommandUsage"));
-                            break;
-                        }
-                        if (id < 1) {
-                            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
-                            break;
-                        }
-                        switch (args[2]) {
-                            case "generator":
-                                if (this.game.getSpawnpoints().getGenerators().size() < id) {
-                                    player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
-                                    break;
-                                }
-                                this.game.getSpawnpoints().getGenerators().remove(id - 1);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveSuccess").replace("%type%", "generator").replace("%id%", String.valueOf(id)));
-                                break;
-                            case "totem":
-                                if (this.game.getSpawnpoints().getTotems().size() < id) {
-                                    player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
-                                    break;
-                                }
-                                this.game.getSpawnpoints().getTotems().remove(id - 1);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveSuccess").replace("%type%", "totem").replace("%id%", String.valueOf(id)));
-                                break;
-                            case "hatch":
-                                if (this.game.getSpawnpoints().getHatches().size() < id) {
-                                    player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
-                                    break;
-                                }
-                                this.game.getSpawnpoints().getHatches().remove(id - 1);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveSuccess").replace("%type%", "hatch").replace("%id%", String.valueOf(id)));
-                                break;
-                            case "exitgate":
-                                if (this.game.getSpawnpoints().getExitGates().size() < id) {
-                                    player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
-                                    break;
-                                }
-                                this.game.getSpawnpoints().getExitGates().remove(id - 1);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveSuccess").replace("%type%", "exitgate").replace("%id%", String.valueOf(id)));
-                                break;
-                            case "chest":
-                                if (this.game.getSpawnpoints().getChests().size() < id) {
-                                    player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
-                                    break;
-                                }
-                                this.game.getSpawnpoints().getChests().remove(id - 1);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveSuccess").replace("%type%", "chest").replace("%id%", String.valueOf(id)));
-                                break;
-                            case "hook":
-                                if (this.game.getSpawnpoints().getHooks().size() < id) {
-                                    player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
-                                    break;
-                                }
-                                this.game.getSpawnpoints().getHooks().remove(id - 1);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveSuccess").replace("%type%", "hook").replace("%id%", String.valueOf(id)));
-                                break;
-                            case "killer":
-                                if (this.game.getSpawnpoints().getSpawnpointsKiller().size() < id) {
-                                    player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
-                                    break;
-                                }
-                                this.game.getSpawnpoints().getSpawnpointsKiller().remove(id - 1);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveSuccess").replace("%type%", "killer").replace("%id%", String.valueOf(id)));
-                                break;
-                            case "survivor":
-                                if (this.game.getSpawnpoints().getSpawnpointsSurvivor().size() < id) {
-                                    player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveIdNotFound"));
-                                    break;
-                                }
-                                this.game.getSpawnpoints().getSpawnpointsSurvivor().remove(id - 1);
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminRemoveSuccess").replace("%type%", "survivor").replace("%id%", String.valueOf(id)));
-                                break;
-                            default:
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminRemoveCommand"));
-                                break;
-                        }
-                        break;
-                    case "list":
-                        if (args.length == 2) {
-                            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminListCommandUsage"));
-                            break;
-                        }
-                        List<String> lines = new ArrayList<>();
-                        int i = 1;
-                        switch (args[2]) {
-                            case "generators":
-                                for (GameObject generator : this.game.getSpawnpoints().getGenerators()) {
-                                    lines.add(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", generator.getSpawnpointObject().saveToString().replace("::", ",")));
-                                    i++;
-                                }
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", "generator"));
-                                for (String line : lines) {
-                                    player.sendMessage(line);
-                                }
-                                break;
-                            case "totems":
-                                for (GameObject totem : this.game.getSpawnpoints().getTotems()) {
-                                    lines.add(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", totem.getSpawnpointObject().saveToString().replace("::", ",")));
-                                    i++;
-                                }
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", "totem"));
-                                for (String line : lines) {
-                                    player.sendMessage(line);
-                                }
-                                break;
-                            case "hatches":
-                                for (GameObject hatch : this.game.getSpawnpoints().getHatches()) {
-                                    lines.add(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", hatch.getSpawnpointObject().saveToString().replace("::", ",")));
-                                    i++;
-                                }
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", "hatch"));
-                                for (String line : lines) {
-                                    player.sendMessage(line);
-                                }
-                                break;
-                            case "exitgates":
-                                for (GameObject exitGate : this.game.getSpawnpoints().getExitGates()) {
-                                    lines.add(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", exitGate.getSpawnpointObject().saveToString().replace("::", ",")));
-                                    i++;
-                                }
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", "exitgate"));
-                                for (String line : lines) {
-                                    player.sendMessage(line);
-                                }
-                                break;
-                            case "chests":
-                                for (GameObject chest : this.game.getSpawnpoints().getChests()) {
-                                    lines.add(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", chest.getSpawnpointObject().saveToString().replace("::", ",")));
-                                    i++;
-                                }
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", "chest"));
-                                for (String line : lines) {
-                                    player.sendMessage(line);
-                                }
-                                break;
-                            case "hooks":
-                                for (GameObject hook : this.game.getSpawnpoints().getHooks()) {
-                                    lines.add(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", hook.getSpawnpointObject().saveToString().replace("::", ",")));
-                                    i++;
-                                }
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", "hook"));
-                                for (String line : lines) {
-                                    player.sendMessage(line);
-                                }
-                                break;
-                            case "killers":
-                                for (SpawnpointEntity killer : this.game.getSpawnpoints().getSpawnpointsKiller()) {
-                                    lines.add(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", killer.getX() + "," + killer.getY() + "," + killer.getZ()));
-                                    i++;
-                                }
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", "killer"));
-                                for (String line : lines) {
-                                    player.sendMessage(line);
-                                }
-                                break;
-                            case "survivors":
-                                for (SpawnpointEntity survivor : this.game.getSpawnpoints().getSpawnpointsSurvivor()) {
-                                    lines.add(this.config.getString("messages.listItems").replace("%id%", String.valueOf(i)).replace("%spawnpoint%", survivor.getX() + "," + survivor.getY() + "," + survivor.getZ()));
-                                    i++;
-                                }
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.listItemsIntro").replace("%type%", "survivor"));
-                                for (String line : lines) {
-                                    player.sendMessage(line);
-                                }
-                                break;
-                            default:
-                                player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminListCommand"));
-                                break;
-                        }
-                        break;
-                    default:
-                        player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminCommand"));
-                        break;
-                }
+                this.adminCommand(player, args);
                 break;
             default:
                 player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownCommand"));

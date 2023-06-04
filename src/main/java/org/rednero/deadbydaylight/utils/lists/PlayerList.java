@@ -4,27 +4,30 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
 import org.rednero.deadbydaylight.utils.enums.GameState;
 import org.rednero.deadbydaylight.utils.enums.PlayerType;
+import org.rednero.deadbydaylight.utils.structs.SpawnpointEntity;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class PlayerList {
+    private final JavaPlugin plugin;
     private final FileConfiguration config;
     private final FileConfiguration scoreboardConfig;
+    private final SpawnpointList spawnpoints;
     private final HashMap<Player, PlayerType> playersType;
     private final HashMap<Player, Scoreboard> scoreboards;
     private final ScoreboardManager scoreboardManager;
     private Random random;
     private static final List<ChatColor> colors = Arrays.asList(ChatColor.values());
 
-    public PlayerList(FileConfiguration config, FileConfiguration scoreboardConfig) {
+    public PlayerList(JavaPlugin plugin, FileConfiguration config, FileConfiguration scoreboardConfig, SpawnpointList spawnpoints) {
+        this.plugin = plugin;
         this.config = config;
         this.scoreboardConfig = scoreboardConfig;
+        this.spawnpoints = spawnpoints;
         this.playersType = new HashMap<>();
         this.scoreboards = new HashMap<>();
         this.scoreboardManager = Bukkit.getScoreboardManager();
@@ -143,16 +146,24 @@ public class PlayerList {
     public void startGame() {
         int current = 0;
         int randomNum = this.random.nextInt(this.getPlayersCount());
+        List<SpawnpointEntity> copySurvivors = new ArrayList<>(this.spawnpoints.getSpawnpointsSurvivor());
         for (Player player : this.playersType.keySet()) {
             if (this.playersType.get(player) != PlayerType.SPECTATOR) {
                 if (current == randomNum) {
                     this.playersType.replace(player, PlayerType.KILLER);
                     this.resetScoreboard(player, this.scoreboardConfig.getStringList("scoreboard.content.inGameKiller").size());
+                    int id = this.random.nextInt(this.spawnpoints.getSpawnpointsKiller().size());
+                    player.teleport(this.spawnpoints.getSpawnpointsKiller().get(id).toLocation(this.plugin.getServer().getWorld(this.config.getString("game.world"))));
                 } else {
                     this.playersType.replace(player, PlayerType.SURVIVOR);
                     this.resetScoreboard(player, this.scoreboardConfig.getStringList("scoreboard.content.inGameSurvivor").size());
+                    int id = this.random.nextInt(copySurvivors.size());
+                    player.teleport(copySurvivors.get(id).toLocation(this.plugin.getServer().getWorld(this.config.getString("game.world"))));
+                    copySurvivors.remove(id);
                 }
                 current++;
+            } else {
+                player.teleport(this.spawnpoints.getSpawnpointSpectator().toLocation(this.plugin.getServer().getWorld(this.config.getString("game.world"))));
             }
         }
     }
@@ -162,6 +173,7 @@ public class PlayerList {
             if (this.playersType.get(player) != PlayerType.SPECTATOR) {
                 this.playersType.replace(player, PlayerType.LOBBY);
             }
+            player.teleport(this.spawnpoints.getSpawnpointSpawn().toLocation(this.plugin.getServer().getWorld(this.config.getString("game.world"))));
             this.resetScoreboard(player, this.scoreboardConfig.getStringList("scoreboard.content.lobby").size());
         }
     }

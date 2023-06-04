@@ -36,31 +36,37 @@ public class AddObject implements Listener {
                         if (meta.getLore().get(0).equals("dbd.generator")) {
                             this.game.getSpawnpoints().getGenerators().add(new Generator(new SpawnpointObject(event.getPlayer(), event.getClickedBlock())));
                             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.generatorAdded"));
+                            player.setItemInHand(new ItemStack(Material.AIR));
                         }
                     } else if (meta.getDisplayName().equals(ChatColor.GOLD + "Add Exit Gate")) {
                         if (meta.getLore().get(0).equals("dbd.exitgate")) {
                             this.game.getSpawnpoints().getExitGates().add(new ExitGate(new SpawnpointObject(event.getPlayer(), event.getClickedBlock())));
                             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.exitGateAdded"));
+                            player.setItemInHand(new ItemStack(Material.AIR));
                         }
                     } else if (meta.getDisplayName().equals(ChatColor.GOLD + "Add Hatch")) {
                         if (meta.getLore().get(0).equals("dbd.hatch")) {
                             this.game.getSpawnpoints().getHatches().add(new Hatch(new SpawnpointObject(event.getPlayer(), event.getClickedBlock())));
                             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.hatchAdded"));
+                            player.setItemInHand(new ItemStack(Material.AIR));
                         }
                     } else if (meta.getDisplayName().equals(ChatColor.GOLD + "Add Chest")) {
                         if (meta.getLore().get(0).equals("dbd.chest")) {
                             this.game.getSpawnpoints().getChests().add(new Chest(new SpawnpointObject(event.getPlayer(), event.getClickedBlock())));
                             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.chestAdded"));
+                            player.setItemInHand(new ItemStack(Material.AIR));
                         }
                     } else if (meta.getDisplayName().equals(ChatColor.GOLD + "Add Totem")) {
                         if (meta.getLore().get(0).equals("dbd.totem")) {
                             this.game.getSpawnpoints().getTotems().add(new Totem(new SpawnpointObject(event.getPlayer(), event.getClickedBlock())));
                             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.totemAdded"));
+                            player.setItemInHand(new ItemStack(Material.AIR));
                         }
                     } else if (meta.getDisplayName().equals(ChatColor.GOLD + "Add Hook")) {
                         if (meta.getLore().get(0).equals("dbd.hook")) {
                             this.game.getSpawnpoints().getHooks().add(new Hook(new SpawnpointObject(event.getPlayer(), event.getClickedBlock())));
                             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.hookAdded"));
+                            player.setItemInHand(new ItemStack(Material.AIR));
                         }
                     }
                 }

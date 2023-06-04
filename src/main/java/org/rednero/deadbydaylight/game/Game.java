@@ -25,9 +25,9 @@ public class Game {
         this.plugin = plugin;
         this.config = config;
         this.scoreboardConfig = scoreboardConfig;
-        this.players = new PlayerList(this.config, this.scoreboardConfig);
         this.signs = new SignList(plugin);
         this.spawnpoints = new SpawnpointList(plugin);
+        this.players = new PlayerList(this.plugin, this.config, this.scoreboardConfig, this.spawnpoints);
         this.gameState = GameState.LOBBY;
     }
 
@@ -167,12 +167,14 @@ public class Game {
         }
         if (this.gameState == GameState.LOBBY) {
             this.players.addPlayer(player, PlayerType.LOBBY, this.gameState);
+            player.teleport(this.spawnpoints.getSpawnpointSpawn().toLocation(this.plugin.getServer().getWorld(this.config.getString("game.world"))));
             if (this.players.getPlayersCount() == this.config.getInt("game.minPlayers")) {
                 this.gameState = GameState.STARTING;
                 this.startingGame();
             }
         } else if (this.gameState == GameState.STARTING) {
             this.players.addPlayer(player, PlayerType.LOBBY, this.gameState);
+            player.teleport(this.spawnpoints.getSpawnpointSpawn().toLocation(this.plugin.getServer().getWorld(this.config.getString("game.world"))));
             if (this.countdown < this.config.getInt("game.fullLobbyTime") || this.players.getPlayersCount() == 5) {
                 this.countdown = this.config.getInt("game.fullLobbyTime");
             }
@@ -192,6 +194,7 @@ public class Game {
         }
         if (this.players.getPlayerType(player) == PlayerType.SPECTATOR) {
             this.players.removePlayer(player);
+            player.teleport(this.spawnpoints.getSpawnpointSpawn().toLocation(this.plugin.getServer().getWorld(this.config.getString("game.world"))));
             return;
         }
         this.playerDisconnect(player);
@@ -210,9 +213,11 @@ public class Game {
             return;
         }
         this.players.addSpectator(player, this.gameState);
+        player.teleport(this.spawnpoints.getSpawnpointSpawn().toLocation(this.plugin.getServer().getWorld(this.config.getString("game.world"))));
     }
 
     public void playerDisconnect(Player player) {
+        player.teleport(this.spawnpoints.getSpawnpointSpawn().toLocation(this.plugin.getServer().getWorld(this.config.getString("game.world"))));
         if (this.gameState == GameState.LOBBY) {
             this.players.removePlayer(player);
         } else if (this.gameState == GameState.STARTING) {
@@ -253,10 +258,6 @@ public class Game {
 
     public int getCountdown() {
         return this.countdown;
-    }
-
-    public int getPlayersCount() {
-        return this.players.getPlayersCount();
     }
 
     public PlayerList getPlayers() {

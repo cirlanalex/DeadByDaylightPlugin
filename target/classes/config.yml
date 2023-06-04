@@ -11,6 +11,7 @@ game:
   generatorRepairTime: 10
   exitGateOpenTime: 5
   hatch: true
+  world: 'world'
 messages:
   prefix: '&7&l[&cDeadByDaylight&7&l]&r '
   joinedMessage: '&aYou joined the lobby!'

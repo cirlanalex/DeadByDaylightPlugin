@@ -1,5 +1,7 @@
 package org.rednero.deadbydaylight.utils.structs;
 
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class SpawnpointEntity extends Coordinates {
@@ -48,5 +50,9 @@ public class SpawnpointEntity extends Coordinates {
         super.loadFromString(split[0] + "::" + split[1] + "::" + split[2]);
         this.yaw = Float.parseFloat(split[3]);
         this.pitch = Float.parseFloat(split[4]);
+    }
+
+    public Location toLocation(World world) {
+        return new Location(world, this.getX(), this.getY(), this.getZ(), this.yaw, this.pitch);
     }
 }
