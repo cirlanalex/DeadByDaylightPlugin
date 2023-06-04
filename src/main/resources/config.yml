@@ -14,6 +14,7 @@ game:
 messages:
   prefix: '&7&l[&cDeadByDaylight&7&l]&r '
   joinedMessage: '&aYou joined the lobby!'
+  joinedSpectatorMessage: '&aYou joined the lobby as a spectator!'
   leftMessage: '&cYou left the lobby!'
   unknownCommand: '&cUnknown command! Use &7/dbd help &cfor help.'
   unknownAdminCommand: '&cUnknown command! Use &7/dbd admin help &cfor help.'
@@ -26,7 +27,7 @@ messages:
   killerLeft: '&cThe killer %killer% left the game!'
   survivorLeft: '&cThe survivor %survivor% left the game!'
   noSurvivorsLeft: '&cThere are no survivors left!'
-  typeSignNotSpecified: '&cYou must specify the type of sign (join, leave, stats).'
+  typeSignNotSpecified: '&cYou must specify the type of sign (join, leave, stats, spectate).'
   noPermissionToPlaceSign: '&cYou don''t have permission to place this sign!'
   noPermissionToBreakSign: '&cYou don''t have permission to break this sign!'
   noPermissionToUseCommand: '&cYou don''t have permission to use this command!'
@@ -37,6 +38,7 @@ messages:
     - '&2/dbd help &r- &7show this message'
     - '&2/dbd join &r- &7join the lobby'
     - '&2/dbd leave &r- &7leave the game'
+    - '&2/dbd spectate &r- &7spectate the game'
     - '&2/dbd stats &r- &7show your stats'
     - '&2/dbd stats <player> &r- &7show stats of a player'
   adminHelpCommand:
@@ -59,3 +61,8 @@ signs:
     - '&6Stats'
     - '&7Right click to'
     - '&7see your stats.'
+  spectateSign:
+    - '&7&l[&cDBD&7&l]'
+    - '&7Spectate'
+    - '&7Right click to'
+    - '&7spectate.'

@@ -5,7 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
-import org.rednero.deadbydaylight.game.Game;
 import org.rednero.deadbydaylight.utils.enums.GameState;
 import org.rednero.deadbydaylight.utils.enums.PlayerType;
 
@@ -57,6 +56,30 @@ public class PlayerList {
             this.resetScoreboard(player, this.scoreboardConfig.getStringList("scoreboard.content.lobby").size());
         } else {
             this.resetScoreboard(player, this.scoreboardConfig.getStringList("scoreboard.content.starting").size());
+        }
+    }
+
+    public void addSpectator(Player player, GameState gameState) {
+        this.playersType.put(player, PlayerType.SPECTATOR);
+        player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.joinedSpectatorMessage"));
+        Scoreboard scoreboard = this.scoreboardManager.getNewScoreboard();
+        Objective objective = scoreboard.registerNewObjective("scoreboard", "dummy");
+        for (int i = 0; i < 16; i++) {
+            Team team = scoreboard.registerNewTeam("team" + i);
+            team.addEntry(colors.get(i).toString());
+        }
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        objective.setDisplayName("");
+        player.setScoreboard(scoreboard);
+        this.scoreboards.put(player, scoreboard);
+        if (gameState == GameState.LOBBY) {
+            this.resetScoreboard(player, this.scoreboardConfig.getStringList("scoreboard.content.lobby").size());
+        } else if (gameState == GameState.STARTING) {
+            this.resetScoreboard(player, this.scoreboardConfig.getStringList("scoreboard.content.starting").size());
+        } else if (gameState == GameState.INGAME) {
+            this.resetScoreboard(player, this.scoreboardConfig.getStringList("scoreboard.content.inGameSpectator").size());
+        } else {
+            this.resetScoreboard(player, this.scoreboardConfig.getStringList("scoreboard.content.ending").size());
         }
     }
 
@@ -138,8 +161,8 @@ public class PlayerList {
         for (Player player : this.playersType.keySet()) {
             if (this.playersType.get(player) != PlayerType.SPECTATOR) {
                 this.playersType.replace(player, PlayerType.LOBBY);
-                this.resetScoreboard(player, this.scoreboardConfig.getStringList("scoreboard.content.lobby").size());
             }
+            this.resetScoreboard(player, this.scoreboardConfig.getStringList("scoreboard.content.lobby").size());
         }
     }
 

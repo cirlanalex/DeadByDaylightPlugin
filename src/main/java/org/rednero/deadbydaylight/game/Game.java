@@ -140,7 +140,23 @@ public class Game {
             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.notInLobby"));
             return;
         }
+        if (this.players.getPlayerType(player) == PlayerType.SPECTATOR) {
+            this.players.removePlayer(player);
+            return;
+        }
         this.playerDisconnect(player);
+    }
+
+    public void spectateGame(Player player) {
+        if (!player.hasPermission("deadbydaylight.play")) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.noPermission"));
+            return;
+        }
+        if (this.players.isPlayerInLobby(player)) {
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.alreadyInLobby"));
+            return;
+        }
+        this.players.addSpectator(player, this.gameState);
     }
 
     public void playerDisconnect(Player player) {

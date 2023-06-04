@@ -35,7 +35,7 @@ public class SignPlace implements Listener {
                     player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.typeSignNotSpecified"));
                     return;
                 }
-                if (!event.getLine(1).equalsIgnoreCase("join") && !event.getLine(1).equalsIgnoreCase("leave") && !event.getLine(1).equalsIgnoreCase("stats")) {
+                if (!event.getLine(1).equalsIgnoreCase("join") && !event.getLine(1).equalsIgnoreCase("leave") && !event.getLine(1).equalsIgnoreCase("stats") && !event.getLine(1).equalsIgnoreCase("spectate")) {
                     player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.typeSignNotSpecified"));
                     return;
                 }
@@ -61,6 +61,13 @@ public class SignPlace implements Listener {
                         i++;
                     }
                     this.signs.addSign(sign, SignType.STATS);
+                } else if (event.getLine(1).equalsIgnoreCase("spectate")) {
+                    int i = 0;
+                    for (String line : this.config.getStringList("signs.spectateSign")) {
+                        sign.setLine(i, line);
+                        i++;
+                    }
+                    this.signs.addSign(sign, SignType.SPECTATE);
                 }
                 sign.update();
             }

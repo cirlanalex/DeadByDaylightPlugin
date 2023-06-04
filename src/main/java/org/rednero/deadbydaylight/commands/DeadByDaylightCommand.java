@@ -54,6 +54,9 @@ public class DeadByDaylightCommand implements CommandExecutor {
             case "join":
                 this.game.joinGame(player);
                 break;
+            case "spectate":
+                this.game.spectateGame(player);
+                break;
             case "leave":
                 this.game.leaveGame(player);
                 break;

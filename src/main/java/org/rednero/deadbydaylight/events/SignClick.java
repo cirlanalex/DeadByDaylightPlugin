@@ -26,6 +26,8 @@ public class SignClick implements Listener {
                     this.game.leaveGame(player);
                 } else if (event.getClickedBlock().hasMetadata("dbd_stats")) {
                     this.game.showStats(player);
+                } else if (event.getClickedBlock().hasMetadata("dbd_spectate")) {
+                    this.game.spectateGame(player);
                 }
             }
         }

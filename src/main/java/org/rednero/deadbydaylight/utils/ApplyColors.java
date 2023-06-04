@@ -36,6 +36,7 @@ public class ApplyColors {
     private void applyColorsToAll() {
         this.applyColorCodes("messages.prefix", this.config);
         this.applyColorCodes("messages.joinedMessage", this.config);
+        this.applyColorCodes("messages.joinedSpectatorMessage", this.config);
         this.applyColorCodes("messages.leftMessage", this.config);
         this.applyColorCodes("messages.showAdminCommands", this.config);
         this.applyColorCodes("messages.unknownCommand", this.config);
@@ -60,5 +61,6 @@ public class ApplyColors {
         this.applyColorCodesList("signs.joinSign", this.config);
         this.applyColorCodesList("signs.leaveSign", this.config);
         this.applyColorCodesList("signs.statsSign", this.config);
+        this.applyColorCodesList("signs.spectateSign", this.config);
     }
 }

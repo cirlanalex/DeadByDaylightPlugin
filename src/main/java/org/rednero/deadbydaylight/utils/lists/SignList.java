@@ -38,6 +38,8 @@ public class SignList {
             sign.setMetadata("dbd_leave", new FixedMetadataValue(this.plugin, true));
         } else if (type == SignType.STATS) {
             sign.setMetadata("dbd_stats", new FixedMetadataValue(this.plugin, true));
+        } else if (type == SignType.SPECTATE) {
+            sign.setMetadata("dbd_spectate", new FixedMetadataValue(this.plugin, true));
         }
     }
 
@@ -48,6 +50,8 @@ public class SignList {
             sign.removeMetadata("dbd_leave", this.plugin);
         } else if (this.signs.get(sign) == SignType.STATS) {
             sign.removeMetadata("dbd_stats", this.plugin);
+        } else if (this.signs.get(sign) == SignType.SPECTATE) {
+            sign.removeMetadata("dbd_spectate", this.plugin);
         }
         this.signs.remove(sign);
     }
@@ -77,6 +81,7 @@ public class SignList {
         List<String> join_signs = this.config.getStringList("joinSigns");
         List<String> leave_signs = this.config.getStringList("leaveSigns");
         List<String> stats_signs = this.config.getStringList("statsSigns");
+        List<String> spectate_signs = this.config.getStringList("spectateSigns");
         for (String join_sign : join_signs) {
             String[] split = join_sign.split("::");
             Sign sign = (Sign) this.plugin.getServer().getWorld(split[0]).getBlockAt(Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3])).getState();
@@ -92,6 +97,11 @@ public class SignList {
             Sign sign = (Sign) this.plugin.getServer().getWorld(split[0]).getBlockAt(Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3])).getState();
             this.addSign(sign, SignType.STATS);
         }
+        for (String spectate_sign : spectate_signs) {
+            String[] split = spectate_sign.split("::");
+            Sign sign = (Sign) this.plugin.getServer().getWorld(split[0]).getBlockAt(Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3])).getState();
+            this.addSign(sign, SignType.SPECTATE);
+        }
     }
 
     public void saveConfig() {
@@ -99,6 +109,7 @@ public class SignList {
             List<String> join_signs = new ArrayList<>();
             List<String> leave_signs = new ArrayList<>();
             List<String> stats_signs = new ArrayList<>();
+            List<String> spectate_signs = new ArrayList<>();
             for (Map.Entry<Sign, SignType> entry : this.signs.entrySet()) {
                 if (entry.getValue() == SignType.JOIN) {
                     join_signs.add(entry.getKey().getLocation().getWorld().getName() + "::" + entry.getKey().getLocation().getBlockX() + "::" + entry.getKey().getLocation().getBlockY() + "::" + entry.getKey().getLocation().getBlockZ());
@@ -106,11 +117,14 @@ public class SignList {
                     leave_signs.add(entry.getKey().getLocation().getWorld().getName() + "::" + entry.getKey().getLocation().getBlockX() + "::" + entry.getKey().getLocation().getBlockY() + "::" + entry.getKey().getLocation().getBlockZ());
                 } else if (entry.getValue() == SignType.STATS) {
                     stats_signs.add(entry.getKey().getLocation().getWorld().getName() + "::" + entry.getKey().getLocation().getBlockX() + "::" + entry.getKey().getLocation().getBlockY() + "::" + entry.getKey().getLocation().getBlockZ());
+                } else if (entry.getValue() == SignType.SPECTATE) {
+                    spectate_signs.add(entry.getKey().getLocation().getWorld().getName() + "::" + entry.getKey().getLocation().getBlockX() + "::" + entry.getKey().getLocation().getBlockY() + "::" + entry.getKey().getLocation().getBlockZ());
                 }
             }
             this.config.set("joinSigns", join_signs);
             this.config.set("leaveSigns", leave_signs);
             this.config.set("statsSigns", stats_signs);
+            this.config.set("spectateSigns", spectate_signs);
             this.config.save(this.configFile);
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,5 +1,5 @@
 package org.rednero.deadbydaylight.utils.enums;
 
 public enum SignType {
-    JOIN, LEAVE, STATS
+    JOIN, LEAVE, STATS, SPECTATE
 }
