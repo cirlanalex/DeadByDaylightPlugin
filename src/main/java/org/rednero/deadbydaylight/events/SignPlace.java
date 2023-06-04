@@ -20,6 +20,7 @@ public class SignPlace implements Listener {
         this.config = config;
         this.signs = signs;
     }
+
     @EventHandler
     public void onSignPlace(SignChangeEvent event) {
         if (event.getBlock().getState() instanceof Sign) {

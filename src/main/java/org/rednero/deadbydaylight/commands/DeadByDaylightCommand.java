@@ -27,7 +27,7 @@ public class DeadByDaylightCommand implements CommandExecutor {
     }
 
     private void adminHelp(Player player) {
-        for(String message : this.config.getStringList("messages.adminHelpCommand")) {
+        for (String message : this.config.getStringList("messages.adminHelpCommand")) {
             player.sendMessage(message);
         }
     }

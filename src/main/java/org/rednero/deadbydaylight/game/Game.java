@@ -12,28 +12,32 @@ import org.rednero.deadbydaylight.utils.lists.SignList;
 public class Game {
     private final JavaPlugin plugin;
     private final FileConfiguration config;
+    private final FileConfiguration scoreboardConfig;
     private PlayerList players;
     private SignList signs;
     private GameState gameState;
     private int countdownTaskId;
     private int countdown;
 
-    public Game(JavaPlugin plugin, FileConfiguration config) {
+    public Game(JavaPlugin plugin, FileConfiguration config, FileConfiguration scoreboardConfig) {
         this.plugin = plugin;
         this.config = config;
-        this.players = new PlayerList(this.config);
+        this.scoreboardConfig = scoreboardConfig;
+        this.players = new PlayerList(this.config, this.scoreboardConfig);
         this.signs = new SignList(plugin);
         this.gameState = GameState.LOBBY;
     }
 
     private void startingGame() {
         this.gameState = GameState.STARTING;
+        this.players.resetScoreboardForAll(this.gameState);
         this.countdown = this.config.getInt("game.waitingForPlayersTime");
         this.startGameCountdown();
     }
 
     private void cancelStartingGame() {
         this.gameState = GameState.LOBBY;
+        this.players.resetScoreboardForAll(this.gameState);
         Bukkit.getScheduler().cancelTask(this.countdownTaskId);
     }
 
@@ -44,6 +48,7 @@ public class Game {
 
     private void endGame() {
         this.gameState = GameState.ENDING;
+        this.players.resetScoreboardForAll(this.gameState);
         this.countdown = this.config.getInt("game.endingTime");
         this.resetGameCountdown();
     }
@@ -111,13 +116,13 @@ public class Game {
             return;
         }
         if (this.gameState == GameState.LOBBY) {
-            this.players.addPlayer(player, PlayerType.LOBBY);
+            this.players.addPlayer(player, PlayerType.LOBBY, this.gameState);
             if (this.players.getPlayersCount() == this.config.getInt("game.minPlayers")) {
                 this.gameState = GameState.STARTING;
                 this.startingGame();
             }
         } else if (this.gameState == GameState.STARTING) {
-            this.players.addPlayer(player, PlayerType.LOBBY);
+            this.players.addPlayer(player, PlayerType.LOBBY, this.gameState);
             if (this.countdown < this.config.getInt("game.fullLobbyTime") || this.players.getPlayersCount() == 5) {
                 this.countdown = this.config.getInt("game.fullLobbyTime");
             }
@@ -144,7 +149,6 @@ public class Game {
         } else if (this.gameState == GameState.STARTING) {
             this.players.removePlayer(player);
             if (this.players.getPlayersCount() < this.config.getInt("game.minPlayers")) {
-                this.players.removePlayer(player);
                 this.cancelStartingGame();
             } else {
                 if (this.countdown < this.config.getInt("game.fullLobbyTime")) {
