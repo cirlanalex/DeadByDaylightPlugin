@@ -94,6 +94,8 @@ public class ApplyColors {
         this.applyColorCodes("messages.adminListCommandUsage", this.config);
         this.applyColorCodes("messages.listItemsIntro", this.config);
         this.applyColorCodes("messages.listItems", this.config);
+        this.applyColorCodes("messages.adminShowCommandDisabled", this.config);
+        this.applyColorCodes("messages.adminShowCommandEnabled", this.config);
         this.applyColorCodes("messages.unknownAdminListCommand", this.config);
         this.applyColorCodes("messages.cantEditGame", this.config);
         this.applyColorCodesList("messages.helpCommand", this.config);

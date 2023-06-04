@@ -1,5 +1,6 @@
 package org.rednero.deadbydaylight.game.objects;
 
+import org.bukkit.Location;
 import org.rednero.deadbydaylight.utils.enums.Direction;
 import org.rednero.deadbydaylight.utils.enums.ObjectType;
 import org.rednero.deadbydaylight.utils.structs.SpawnpointObject;

@@ -1,11 +1,13 @@
 package org.rednero.deadbydaylight.utils.structs;
 
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.rednero.deadbydaylight.utils.enums.Direction;
 
 public class SpawnpointObject extends Coordinates {
-    Direction direction;
+    private Direction direction;
 
     public SpawnpointObject() {
         super();
@@ -68,5 +70,9 @@ public class SpawnpointObject extends Coordinates {
         String[] split = string.split("::");
         super.loadFromString(split[0] + "::" + split[1] + "::" + split[2]);
         this.direction = Direction.valueOf(split[3]);
+    }
+
+    public Location toLocation(World world) {
+        return new Location(world, this.getX(), this.getY(), this.getZ());
     }
 }

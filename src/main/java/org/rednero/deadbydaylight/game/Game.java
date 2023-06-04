@@ -10,6 +10,9 @@ import org.rednero.deadbydaylight.utils.lists.PlayerList;
 import org.rednero.deadbydaylight.utils.lists.SignList;
 import org.rednero.deadbydaylight.utils.lists.SpawnpointList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Game {
     private final JavaPlugin plugin;
     private final FileConfiguration config;
@@ -19,7 +22,9 @@ public class Game {
     private SpawnpointList spawnpoints;
     private GameState gameState;
     private int countdownTaskId;
+    private int particleTaskId = -1;
     private int countdown;
+    private List<Player> showParticleList = new ArrayList<>();
 
     public Game(JavaPlugin plugin, FileConfiguration config, FileConfiguration scoreboardConfig) {
         this.plugin = plugin;
@@ -270,5 +275,17 @@ public class Game {
 
     public GameState getGameState() {
         return this.gameState;
+    }
+
+    public List<Player> getShowParticleList() {
+        return this.showParticleList;
+    }
+
+    public void setParticleTaskId(int taskId) {
+        this.particleTaskId = taskId;
+    }
+
+    public int getParticleTaskId() {
+        return this.particleTaskId;
     }
 }

@@ -62,6 +62,8 @@ messages:
   adminRemoveCommandUsage: '&cUsage: /dbd admin remove <generator|chest|hook|exitgate|totem|hatch|killer|survivor> <id>'
   adminRemoveIdNotFound: '&cID not found!'
   adminRemoveSuccess: '&a%type% %id% removed!'
+  adminShowCommandDisabled: '&cYou disabled the particles!'
+  adminShowCommandEnabled: '&aYou enabled the particles!'
   unknownAdminRemoveCommand: '&cUnknown command! Use &7/dbd admin remove &cfor help.'
   adminListCommandUsage: '&cUsage: /dbd admin list <generators|chests|hooks|exitgates|totems|hatches|killers|survivors>'
   listItemsIntro: '&2List of %type%:'
