@@ -4,11 +4,17 @@ import org.rednero.deadbydaylight.utils.enums.Direction;
 import org.rednero.deadbydaylight.utils.enums.ObjectType;
 import org.rednero.deadbydaylight.utils.structs.SpawnpointObject;
 
+import java.util.List;
+
 public class Chest implements GameObject {
     private SpawnpointObject spawnpointObject;
 
     public Chest(double x, double y, double z, Direction direction) {
         this.spawnpointObject = new SpawnpointObject(x, y, z, direction);
+    }
+
+    public Chest(SpawnpointObject spawnpointObject) {
+        this.spawnpointObject = spawnpointObject;
     }
 
     public SpawnpointObject getSpawnpointObject() {

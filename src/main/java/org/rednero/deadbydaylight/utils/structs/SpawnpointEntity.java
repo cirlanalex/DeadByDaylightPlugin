@@ -1,5 +1,7 @@
 package org.rednero.deadbydaylight.utils.structs;
 
+import org.bukkit.entity.Player;
+
 public class SpawnpointEntity extends Coordinates {
     private float yaw;
     private float pitch;
@@ -11,6 +13,12 @@ public class SpawnpointEntity extends Coordinates {
         super(x, y, z);
         this.yaw = yaw;
         this.pitch = pitch;
+    }
+
+    public SpawnpointEntity(Player player) {
+        super(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+        this.yaw = player.getLocation().getYaw();
+        this.pitch = player.getLocation().getPitch();
     }
 
     public float getYaw() {

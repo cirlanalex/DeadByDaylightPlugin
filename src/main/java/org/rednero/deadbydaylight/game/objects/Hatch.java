@@ -11,6 +11,10 @@ public class Hatch implements GameObject {
         this.spawnpointObject = new SpawnpointObject(x, y, z, direction);
     }
 
+    public Hatch(SpawnpointObject spawnpointObject) {
+        this.spawnpointObject = spawnpointObject;
+    }
+
     public SpawnpointObject getSpawnpointObject() {
         return this.spawnpointObject;
     }

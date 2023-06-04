@@ -11,6 +11,10 @@ public class Totem implements GameObject {
         this.spawnpointObject = new SpawnpointObject(x, y, z, direction);
     }
 
+    public Totem(SpawnpointObject spawnpointObject) {
+        this.spawnpointObject = spawnpointObject;
+    }
+
     public SpawnpointObject getSpawnpointObject() {
         return this.spawnpointObject;
     }

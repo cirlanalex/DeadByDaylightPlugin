@@ -22,6 +22,7 @@ public final class DeadByDaylight extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerLeave(this.game), this);
         getServer().getPluginManager().registerEvents(new SignBreak(this.config, this.game.getSigns()), this);
         getServer().getPluginManager().registerEvents(new SupportSignBreak(this.game.getSigns()), this);
+        getServer().getPluginManager().registerEvents(new AddObject(this.config, this.game), this);
     }
 
     private void implementCommands() {
