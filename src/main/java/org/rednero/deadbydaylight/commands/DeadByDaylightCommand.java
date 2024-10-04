@@ -1,7 +1,8 @@
 package org.rednero.deadbydaylight.commands;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import net.minecraft.server.v1_8_R3.EnumParticle;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,6 +11,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.rednero.deadbydaylight.game.Game;
 import org.rednero.deadbydaylight.game.objects.GameObject;
 import org.rednero.deadbydaylight.utils.structs.SpawnpointEntity;
@@ -18,12 +21,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DeadByDaylightCommand implements CommandExecutor {
+    private final JavaPlugin plugin;
     private final FileConfiguration config;
     private final Game game;
+    private List<Player> particlePlayers;
 
-    public DeadByDaylightCommand(FileConfiguration config, Game game) {
+    public DeadByDaylightCommand(JavaPlugin plugin, FileConfiguration config, Game game) {
+        this.plugin = plugin;
         this.config = config;
         this.game = game;
+        this.particlePlayers = this.game.getShowParticleList();
     }
 
     private void help(Player player) {
@@ -253,6 +260,64 @@ public class DeadByDaylightCommand implements CommandExecutor {
         }
     }
 
+    private void spawnParticles(Player player, Location location, float offsetX, float offsetY, float offsetZ, float speed, int count, EnumParticle particle) {
+        PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
+                particle, // Particle type
+                true, // Long-distance mode
+                (float) location.getX() + 0.5f, // X coordinate
+                (float) location.getY() + 1.5f, // Y coordinate
+                (float) location.getZ() + 0.5f, // Z coordinate
+                offsetX, // Offset X
+                offsetY, // Offset Y
+                offsetZ, // Offset Z
+                speed, // Speed
+                count // Particle count
+        );
+
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    }
+
+    private void showParticles(Player player) {
+        if (this.particlePlayers.contains(player)) {
+            this.particlePlayers.remove(player);
+            player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminShowCommandDisabled"));
+            if (this.game.getParticleTaskId() != -1 && this.particlePlayers.isEmpty()) {
+                Bukkit.getScheduler().cancelTask(this.game.getParticleTaskId());
+                this.game.setParticleTaskId(-1);
+            }
+            return;
+        }
+        this.particlePlayers.add(player);
+        player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.adminShowCommandEnabled"));
+        if (this.game.getParticleTaskId() == -1) {
+            int id;
+            id = Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
+                World world = this.plugin.getServer().getWorld(this.config.getString("game.world"));
+                for (Player playerParticle : this.particlePlayers) {
+                    for (GameObject gameObject : this.game.getSpawnpoints().getGenerators()) {
+                        this.spawnParticles(playerParticle, gameObject.getSpawnpointObject().toLocation(world), 0f, 0.1f, 0f, 0f, 10, EnumParticle.VILLAGER_HAPPY);
+                    }
+                    for (GameObject gameObject : this.game.getSpawnpoints().getTotems()) {
+                        this.spawnParticles(playerParticle, gameObject.getSpawnpointObject().toLocation(world), 0f, 0.1f, 0f, 0f, 10, EnumParticle.FLAME);
+                    }
+                    for (GameObject gameObject : this.game.getSpawnpoints().getHatches()) {
+                        this.spawnParticles(playerParticle, gameObject.getSpawnpointObject().toLocation(world), 0f, 0f, 0f, 0f, 1, EnumParticle.BARRIER);
+                    }
+                    for (GameObject gameObject : this.game.getSpawnpoints().getExitGates()) {
+                        this.spawnParticles(playerParticle, gameObject.getSpawnpointObject().toLocation(world), 0f, 0.1f, 0f, 0f, 10, EnumParticle.SLIME);
+                    }
+                    for (GameObject gameObject : this.game.getSpawnpoints().getChests()) {
+                        this.spawnParticles(playerParticle, gameObject.getSpawnpointObject().toLocation(world), 0f, 0.1f, 0f, 0f, 10, EnumParticle.CLOUD);
+                    }
+                    for (GameObject gameObject : this.game.getSpawnpoints().getHooks()) {
+                        this.spawnParticles(playerParticle, gameObject.getSpawnpointObject().toLocation(world), 0f, 0.1f, 0f, 0f, 10, EnumParticle.REDSTONE);
+                    }
+                }
+            }, 0L, 10L);
+            this.game.setParticleTaskId(id);
+        }
+    }
+
     private void adminCommand(Player player, String[] args) {
         if (!player.hasPermission("deadbydaylight.admin")) {
             player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.noPermissionToUseCommand"));
@@ -277,6 +342,9 @@ public class DeadByDaylightCommand implements CommandExecutor {
                 break;
             case "list":
                 this.adminListCommand(player, args);
+                break;
+            case "show":
+                this.showParticles(player);
                 break;
             default:
                 player.sendMessage(this.config.getString("messages.prefix") + this.config.getString("messages.unknownAdminCommand"));

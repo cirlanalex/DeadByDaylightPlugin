@@ -26,7 +26,7 @@ public final class DeadByDaylight extends JavaPlugin {
     }
 
     private void implementCommands() {
-        getCommand("dbd").setExecutor(new DeadByDaylightCommand(this.config, this.game));
+        getCommand("dbd").setExecutor(new DeadByDaylightCommand(this, this.config, this.game));
     }
 
     private void startTimers() {
